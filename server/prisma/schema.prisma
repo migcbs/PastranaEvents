@@ -1,0 +1,64 @@
+// Esquema de Prisma para J. Pastrana (backend).
+//
+// Por defecto usa SQLite para que puedas correr todo localmente sin
+// configurar nada. Cuando tengas tu proyecto de Neon (Postgres) en Vercel:
+//   1. Cambia `provider = "sqlite"` por `provider = "postgresql"` abajo.
+//   2. Pon tu cadena de conexión de Neon en DATABASE_URL (archivo .env).
+//   3. Corre: npx prisma migrate dev --name init
+// El esquema de los modelos no necesita cambiar.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id              String   @id @default(cuid())
+  name            String
+  phone           String
+  email           String?
+  eventType       String
+  eventDate       String
+  location        String
+  guests          String?
+  details         String?
+  packageInterest String?
+  createdAt       DateTime @default(now())
+}
+
+// Nota: se usa String en vez de enum para que el esquema funcione igual en
+// SQLite (desarrollo) y Postgres/Neon (producción). Valores válidos:
+// "PENDING" | "APPROVED" | "REJECTED" (validados en server/index.js).
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  rating    Int      @default(5)
+  message   String
+  lang      String   @default("es")
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Usuario administrador. Se crea con `npm run seed` (ver prisma/seed.js) —
+// las credenciales NUNCA se muestran en el frontend.
+model AdminUser {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  sessions     AdminSession[]
+}
+
+model AdminSession {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  admin     AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId   String
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+}
