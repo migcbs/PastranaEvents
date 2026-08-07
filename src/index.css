@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+:root {
+  --color-base: 255 255 255;
+  --color-surface: 245 245 245;
+  --color-surface-2: 235 235 235;
+  --color-ink: 10 10 10;
+  --color-muted: 87 87 87;
+  --color-edge: 0 0 0;
+  --color-accent: 139 49 255;
+  --color-accent-dim: 107 31 223;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+[data-theme="dark"] {
+  --color-base: 10 10 10;
+  --color-surface: 17 17 17;
+  --color-surface-2: 26 26 26;
+  --color-ink: 240 240 240;
+  --color-muted: 136 136 136;
+  --color-edge: 255 255 255;
+}
+
+body {
+  background-color: rgb(var(--color-base));
+  color: rgb(var(--color-ink));
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 35s) linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-marquee-reverse {
+  animation: marquee var(--marquee-duration, 35s) linear infinite reverse;
+}
+
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+.jp-input {
+  width: 100%;
+  max-width: 100%;
+  background-color: rgb(var(--color-surface));
+  border: 1px solid rgb(var(--color-edge) / 0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: rgb(var(--color-ink));
+}
+
+.jp-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(var(--color-accent));
+}
+
+@keyframes story-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
