@@ -16,6 +16,7 @@ export function useInView(options = {}) {
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return [ref, inView];
