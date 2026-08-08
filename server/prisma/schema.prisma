@@ -1,19 +1,18 @@
-// Esquema de Prisma para J. Pastrana (backend).
+// Esquema de Prisma para Pastrana Events (backend).
 //
-// Por defecto usa SQLite para que puedas correr todo localmente sin
-// configurar nada. Cuando tengas tu proyecto de Neon (Postgres) en Vercel:
-//   1. Cambia `provider = "sqlite"` por `provider = "postgresql"` abajo.
-//   2. Pon tu cadena de conexión de Neon en DATABASE_URL (archivo .env).
-//   3. Corre: npx prisma migrate dev --name init
-// El esquema de los modelos no necesita cambiar.
+// Producción: Postgres (Neon), conectado vía la integración de Neon en
+// Vercel. `url` usa la conexión pooled (para las funciones serverless en
+// runtime) y `directUrl` la conexión directa sin pgbouncer (necesaria para
+// que `prisma migrate` funcione correctamente).
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model Lead {
