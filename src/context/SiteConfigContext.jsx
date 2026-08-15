@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { defaultContent, defaultSettings, FONT_OPTIONS } from "./defaultContent";
+import { api } from "../utils/api";
 
 const STORAGE_KEY = "jp_site_content_v4";
 const SiteConfigContext = createContext(null);
@@ -49,10 +50,53 @@ function applySettingsToDom(settings) {
 
 export function SiteConfigProvider({ children }) {
   const [content, setContent] = useState(() => loadStored() || { ...defaultContent, settings: defaultSettings });
+  const hydrated = useRef(false);
+  const skipNextPush = useRef(false);
+
+  // El contenido vive en el servidor (tabla SiteContent) para que se vea
+  // igual para todos los visitantes y en todos los dispositivos — antes solo
+  // se guardaba en localStorage del navegador donde se editaba desde /admin.
+  // localStorage se sigue usando como caché rápida y respaldo sin conexión.
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .getSiteContent()
+      .then((remote) => {
+        if (cancelled || !remote) return;
+        skipNextPush.current = true;
+        setContent({
+          es: { ...defaultContent.es, ...remote.es },
+          en: { ...defaultContent.en, ...remote.en },
+          settings: { ...defaultSettings, ...remote.settings },
+        });
+      })
+      .catch(() => {
+        // sin conexión con el servidor: seguimos con localStorage/defaults
+      })
+      .finally(() => {
+        if (!cancelled) hydrated.current = true;
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
     applySettingsToDom(content.settings);
+
+    if (!hydrated.current) return;
+    if (skipNextPush.current) {
+      skipNextPush.current = false;
+      return;
+    }
+    const timeout = setTimeout(() => {
+      api.saveSiteContent(content).catch(() => {
+        // sin conexión, o quien edita no tiene sesión de admin: el contenido
+        // queda guardado localmente igual, se reintentará en el próximo cambio
+      });
+    }, 600);
+    return () => clearTimeout(timeout);
   }, [content]);
 
   // El admin y el sitio pueden estar abiertos en pestañas distintas; sin esto,

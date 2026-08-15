@@ -58,8 +58,19 @@ export function LeadsProvider({ children }) {
     setLeads((prev) => prev.filter((l) => l.id !== id));
   }, []);
 
+  const updateLeadStatus = useCallback(async (id, status) => {
+    if (id.startsWith("local-")) {
+      const current = readFallback().map((l) => (l.id === id ? { ...l, status } : l));
+      writeFallback(current);
+      setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+      return;
+    }
+    const updated = await api.updateLeadStatus(id, status);
+    setLeads((prev) => prev.map((l) => (l.id === id ? updated : l)));
+  }, []);
+
   return (
-    <LeadsContext.Provider value={{ leads, loading, offline, fetchLeads, createLead, removeLead }}>
+    <LeadsContext.Provider value={{ leads, loading, offline, fetchLeads, createLead, removeLead, updateLeadStatus }}>
       {children}
     </LeadsContext.Provider>
   );

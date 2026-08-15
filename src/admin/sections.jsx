@@ -836,8 +836,16 @@ export function FooterSectionAdmin({ lang }) {
   );
 }
 
+const LEAD_STATUS_LABEL = { PENDING: "Pendiente", ACCEPTED: "Aceptada", REJECTED: "Rechazada", PROCESSED: "Procesada" };
+const LEAD_STATUS_COLOR = {
+  PENDING: "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400",
+  ACCEPTED: "bg-green-500/15 text-green-700 dark:text-green-400",
+  REJECTED: "bg-red-500/15 text-red-700 dark:text-red-400",
+  PROCESSED: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
+};
+
 export function LeadsSection() {
-  const { leads, loading, offline, fetchLeads, removeLead } = useLeads();
+  const { leads, loading, offline, fetchLeads, removeLead, updateLeadStatus } = useLeads();
 
   useEffect(() => {
     fetchLeads();
@@ -859,25 +867,71 @@ export function LeadsSection() {
         </div>
       )}
 
-      {leads.map((lead) => (
-        <div key={lead.id} className="bg-surface border border-edge/5 rounded-2xl p-6 flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm">{lead.name}</h4>
-            <RemoveButton onClick={() => removeLead(lead.id)} />
+      {leads.map((lead) => {
+        const status = lead.status || "PENDING";
+        return (
+          <div key={lead.id} className="bg-surface border border-edge/5 rounded-2xl p-6 flex flex-col gap-2">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <h4 className="font-bold text-sm">{lead.name}</h4>
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ${LEAD_STATUS_COLOR[status]}`}>
+                  {LEAD_STATUS_LABEL[status]}
+                </span>
+              </div>
+              <RemoveButton onClick={() => removeLead(lead.id)} />
+            </div>
+            <p className="text-xs text-muted">{new Date(lead.createdAt).toLocaleString()}</p>
+            <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm mt-2">
+              <p><span className="text-muted">Teléfono:</span> {lead.phone}</p>
+              {lead.email && <p><span className="text-muted">Correo:</span> {lead.email}</p>}
+              <p><span className="text-muted">Tipo de evento:</span> {lead.eventType}</p>
+              <p><span className="text-muted">Fecha:</span> {lead.eventDate}</p>
+              <p className="sm:col-span-2"><span className="text-muted">Lugar:</span> {lead.location}</p>
+              {lead.guests && <p><span className="text-muted">Invitados:</span> {lead.guests}</p>}
+              {lead.packageInterest && <p><span className="text-muted">Paquete de interés:</span> {lead.packageInterest}</p>}
+              {lead.details && <p className="sm:col-span-2"><span className="text-muted">Detalles:</span> {lead.details}</p>}
+            </div>
+            <div className="flex flex-wrap gap-2 mt-1">
+              {status !== "ACCEPTED" && (
+                <button
+                  type="button"
+                  onClick={() => updateLeadStatus(lead.id, "ACCEPTED")}
+                  className="text-[11px] font-bold tracking-widest uppercase bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2"
+                >
+                  Aceptar
+                </button>
+              )}
+              {status !== "PROCESSED" && (
+                <button
+                  type="button"
+                  onClick={() => updateLeadStatus(lead.id, "PROCESSED")}
+                  className="text-[11px] font-bold tracking-widest uppercase bg-accent hover:bg-accent-dim text-white rounded-full px-4 py-2"
+                >
+                  Marcar procesada
+                </button>
+              )}
+              {status !== "REJECTED" && (
+                <button
+                  type="button"
+                  onClick={() => updateLeadStatus(lead.id, "REJECTED")}
+                  className="text-[11px] font-bold tracking-widest uppercase bg-surface-2 hover:bg-red-500/10 hover:text-red-500 rounded-full px-4 py-2"
+                >
+                  Rechazar
+                </button>
+              )}
+              {status !== "PENDING" && (
+                <button
+                  type="button"
+                  onClick={() => updateLeadStatus(lead.id, "PENDING")}
+                  className="text-[11px] font-bold tracking-widest uppercase border border-edge/10 rounded-full px-4 py-2 text-muted hover:border-edge/30"
+                >
+                  Volver a pendiente
+                </button>
+              )}
+            </div>
           </div>
-          <p className="text-xs text-muted">{new Date(lead.createdAt).toLocaleString()}</p>
-          <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm mt-2">
-            <p><span className="text-muted">Teléfono:</span> {lead.phone}</p>
-            {lead.email && <p><span className="text-muted">Correo:</span> {lead.email}</p>}
-            <p><span className="text-muted">Tipo de evento:</span> {lead.eventType}</p>
-            <p><span className="text-muted">Fecha:</span> {lead.eventDate}</p>
-            <p className="sm:col-span-2"><span className="text-muted">Lugar:</span> {lead.location}</p>
-            {lead.guests && <p><span className="text-muted">Invitados:</span> {lead.guests}</p>}
-            {lead.packageInterest && <p><span className="text-muted">Paquete de interés:</span> {lead.packageInterest}</p>}
-            {lead.details && <p className="sm:col-span-2"><span className="text-muted">Detalles:</span> {lead.details}</p>}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -81,11 +81,14 @@ app.post("/api/leads", async (req, res) => {
     const lead = await prisma.lead.create({
       data: { name, phone, email, eventType, eventDate, location, guests, details, packageInterest },
     });
-    res.status(201).json(lead);
 
-    // No bloquea ni afecta la respuesta: la reserva ya se guardó pase lo que
-    // pase con el correo. Si falla el envío, solo queda un log en el server.
-    sendLeadNotification(lead);
+    // Se espera antes de responder porque en Vercel (serverless) la función
+    // se congela apenas se envía la respuesta — un "fire and forget" después
+    // de res.json() nunca llega a completarse. sendLeadNotification ya
+    // atrapa sus propios errores, así que esto no puede tumbar la request.
+    await sendLeadNotification(lead);
+
+    res.status(201).json(lead);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error al guardar la solicitud" });
@@ -95,6 +98,21 @@ app.post("/api/leads", async (req, res) => {
 app.get("/api/leads", requireAdmin, async (req, res) => {
   const leads = await prisma.lead.findMany({ orderBy: { createdAt: "desc" } });
   res.json(leads);
+});
+
+app.patch("/api/leads/:id", requireAdmin, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const VALID_STATUSES = ["PENDING", "ACCEPTED", "REJECTED", "PROCESSED"];
+    if (!VALID_STATUSES.includes(status)) {
+      return res.status(400).json({ error: "Estado inválido" });
+    }
+    const lead = await prisma.lead.update({ where: { id: req.params.id }, data: { status } });
+    res.json(lead);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al actualizar la solicitud" });
+  }
 });
 
 app.delete("/api/leads/:id", requireAdmin, async (req, res) => {
@@ -166,6 +184,37 @@ app.patch("/api/testimonials/:id", requireAdmin, async (req, res) => {
 app.delete("/api/testimonials/:id", requireAdmin, async (req, res) => {
   await prisma.testimonial.delete({ where: { id: req.params.id } });
   res.status(204).end();
+});
+
+// ---------- Contenido del sitio (textos ES/EN, apariencia) ----------
+//
+// Antes el contenido editable desde /admin solo se guardaba en localStorage
+// del navegador — por eso los cambios no se veían en otros dispositivos ni
+// para otros visitantes. Ahora se guarda en una fila única (singleton) en la
+// base de datos: GET es público (lo necesita cualquier visitante para pintar
+// el sitio), PUT requiere admin.
+
+app.get("/api/site-content", async (req, res) => {
+  const row = await prisma.siteContent.findUnique({ where: { id: "singleton" } });
+  res.json(row?.data ?? null);
+});
+
+app.put("/api/site-content", requireAdmin, async (req, res) => {
+  try {
+    const data = req.body;
+    if (!data || typeof data !== "object") {
+      return res.status(400).json({ error: "Contenido inválido" });
+    }
+    const row = await prisma.siteContent.upsert({
+      where: { id: "singleton" },
+      update: { data },
+      create: { id: "singleton", data },
+    });
+    res.json(row.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al guardar el contenido" });
+  }
 });
 
 // ---------- Traducción automática (admin) ----------

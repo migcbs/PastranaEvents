@@ -29,7 +29,7 @@ const UI_STRINGS = {
 };
 
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState(() => localStorage.getItem(STORAGE_KEY) || "es");
+  const [lang, setLang] = useState(() => localStorage.getItem(STORAGE_KEY) || "en");
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, lang);

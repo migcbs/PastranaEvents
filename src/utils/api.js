@@ -41,7 +41,12 @@ export const api = {
   // Leads
   createLead: (data) => request("/api/leads", { method: "POST", body: data }),
   listLeads: () => request("/api/leads", { admin: true }),
+  updateLeadStatus: (id, status) => request(`/api/leads/${id}`, { method: "PATCH", body: { status }, admin: true }),
   deleteLead: (id) => request(`/api/leads/${id}`, { method: "DELETE", admin: true }),
+
+  // Contenido del sitio
+  getSiteContent: () => request("/api/site-content"),
+  saveSiteContent: (data) => request("/api/site-content", { method: "PUT", body: data, admin: true }),
 
   // Testimonials
   submitTestimonial: (data) => request("/api/testimonials", { method: "POST", body: data }),
