@@ -82,11 +82,17 @@ app.post("/api/leads", async (req, res) => {
       data: { name, phone, email, eventType, eventDate, location, guests, details, packageInterest },
     });
 
+    // El correo de notificación se manda al correo de contacto configurado
+    // en /admin (sección Contacto), no a una variable de entorno — así el
+    // destino queda donde el admin ya lo edita, sin depender de que la
+    // variable ADMIN_NOTIFICATION_EMAIL esté bien puesta en Vercel.
     // Se espera antes de responder porque en Vercel (serverless) la función
     // se congela apenas se envía la respuesta — un "fire and forget" después
     // de res.json() nunca llega a completarse. sendLeadNotification ya
     // atrapa sus propios errores, así que esto no puede tumbar la request.
-    await sendLeadNotification(lead);
+    const siteContent = await prisma.siteContent.findUnique({ where: { id: "singleton" } });
+    const notifyTo = siteContent?.data?.es?.contact?.email || siteContent?.data?.en?.contact?.email;
+    await sendLeadNotification(lead, notifyTo);
 
     res.status(201).json(lead);
   } catch (err) {

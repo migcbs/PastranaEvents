@@ -39,7 +39,7 @@ const TABS = [
 
 export default function AdminDashboard() {
   const { isAuthenticated, checking, logout } = useAuth();
-  const { resetAll } = useSiteConfig();
+  const { resetAll, syncStatus } = useSiteConfig();
   const [editingLang, setEditingLang] = useState("es");
   const [activeTab, setActiveTab] = useState("appearance");
 
@@ -93,6 +93,14 @@ export default function AdminDashboard() {
           </button>
         </div>
       </header>
+
+      {syncStatus === "error" && (
+        <div className="bg-red-500/10 border-b border-red-500/30 text-red-600 dark:text-red-400 px-6 py-3 text-xs font-medium">
+          No se pudo guardar el último cambio en el servidor (tu sesión pudo expirar, o no hay conexión). El
+          cambio quedó guardado solo en este navegador — vuelve a intentarlo o inicia sesión de nuevo para que
+          se vea en todos los dispositivos.
+        </div>
+      )}
 
       <div className="flex flex-col lg:flex-row">
         <nav className="lg:w-56 flex-shrink-0 px-4 py-6 lg:px-4 lg:sticky lg:top-[73px] lg:h-[calc(100vh-73px)] overflow-x-auto lg:overflow-y-auto">

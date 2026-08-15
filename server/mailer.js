@@ -17,14 +17,17 @@ function row(label, value) {
 }
 
 // Envía un correo al admin cuando llega una nueva solicitud de reserva.
-// Si no hay RESEND_API_KEY o ADMIN_NOTIFICATION_EMAIL configurados, no hace
-// nada (silenciosamente) — la reserva ya quedó guardada en la base de datos
-// de cualquier forma, así que esto nunca debe bloquear ni fallar esa parte.
-async function sendLeadNotification(lead) {
-  const to = process.env.ADMIN_NOTIFICATION_EMAIL;
+// `preferredTo` es el correo de contacto configurado en /admin (sección
+// Contacto); si no está disponible, cae a la variable de entorno
+// ADMIN_NOTIFICATION_EMAIL como respaldo. Si no hay RESEND_API_KEY ni
+// ningún destino, no hace nada (silenciosamente) — la reserva ya quedó
+// guardada en la base de datos de cualquier forma, así que esto nunca debe
+// bloquear ni fallar esa parte.
+async function sendLeadNotification(lead, preferredTo) {
+  const to = preferredTo || process.env.ADMIN_NOTIFICATION_EMAIL;
   if (!resend || !to) {
     console.warn(
-      "[mailer] RESEND_API_KEY o ADMIN_NOTIFICATION_EMAIL no configurados — no se envió notificación por correo."
+      "[mailer] RESEND_API_KEY no configurado, o no hay correo de contacto/ADMIN_NOTIFICATION_EMAIL — no se envió notificación por correo."
     );
     return;
   }

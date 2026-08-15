@@ -50,6 +50,7 @@ function applySettingsToDom(settings) {
 
 export function SiteConfigProvider({ children }) {
   const [content, setContent] = useState(() => loadStored() || { ...defaultContent, settings: defaultSettings });
+  const [syncStatus, setSyncStatus] = useState("idle"); // idle | saving | saved | error
   const hydrated = useRef(false);
   const skipNextPush = useRef(false);
 
@@ -91,10 +92,16 @@ export function SiteConfigProvider({ children }) {
       return;
     }
     const timeout = setTimeout(() => {
-      api.saveSiteContent(content).catch(() => {
-        // sin conexión, o quien edita no tiene sesión de admin: el contenido
-        // queda guardado localmente igual, se reintentará en el próximo cambio
-      });
+      setSyncStatus("saving");
+      api
+        .saveSiteContent(content)
+        .then(() => setSyncStatus("saved"))
+        .catch(() => {
+          // sin conexión, o quien edita no tiene sesión de admin: el contenido
+          // queda guardado localmente igual, pero hay que avisar — si no, un
+          // cambio puede parecer guardado y en realidad solo vivir en este navegador.
+          setSyncStatus("error");
+        });
     }, 600);
     return () => clearTimeout(timeout);
   }, [content]);
@@ -140,7 +147,7 @@ export function SiteConfigProvider({ children }) {
 
   return (
     <SiteConfigContext.Provider
-      value={{ content, updateSection, updateSettings, resetSection, resetAll }}
+      value={{ content, updateSection, updateSettings, resetSection, resetAll, syncStatus }}
     >
       {children}
     </SiteConfigContext.Provider>
