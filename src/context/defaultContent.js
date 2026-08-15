@@ -98,6 +98,7 @@ export const defaultContent = {
       headingLine1: "SETS &",
       headingLine2: "GÉNEROS",
       subheading: "Cada evento es único. Cada set, irrepetible.",
+      soundcloudUrl: "",
       items: [
         { icon: "Music", name: "HOUSE", desc: "Progressive · Tech · Deep" },
         { icon: "Radio", name: "REGGAETÓN", desc: "Old School · New Era" },
@@ -387,6 +388,7 @@ export const defaultContent = {
       headingLine1: "SETS &",
       headingLine2: "GENRES",
       subheading: "Every event is unique. Every set, unrepeatable.",
+      soundcloudUrl: "",
       items: [
         { icon: "Music", name: "HOUSE", desc: "Progressive · Tech · Deep" },
         { icon: "Radio", name: "REGGAETON", desc: "Old School · New Era" },

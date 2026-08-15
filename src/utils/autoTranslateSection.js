@@ -32,6 +32,7 @@ const SKIP_KEYS = new Set([
   "tiktok",
   "youtube",
   "spotify",
+  "soundcloudUrl",
 ]);
 
 // Salvaguarda adicional: nunca traducir algo que ya parece una URL, sin

@@ -223,6 +223,12 @@ export function GenresSectionAdmin({ lang }) {
       <TextInput label="Título línea 1" value={draft.headingLine1} onChange={(v) => setDraft({ ...draft, headingLine1: v })} />
       <TextInput label="Título línea 2" value={draft.headingLine2} onChange={(v) => setDraft({ ...draft, headingLine2: v })} />
       <TextInput label="Subtítulo" value={draft.subheading} onChange={(v) => setDraft({ ...draft, subheading: v })} full />
+      <TextInput
+        label="Link de SoundCloud (track o playlist)"
+        value={draft.soundcloudUrl || ""}
+        onChange={(v) => setDraft({ ...draft, soundcloudUrl: v })}
+        full
+      />
 
       <div className="sm:col-span-2 flex flex-col gap-3">
         {draft.items.map((item, i) => (
