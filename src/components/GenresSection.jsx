@@ -28,21 +28,19 @@ export default function GenresSection() {
       <p className="text-muted mt-6">{genres.subheading}</p>
 
       {genres.soundcloudUrl && (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
-          <div className="col-span-2 rounded-xl overflow-hidden border border-edge/10 bg-surface-2">
-            <iframe
-              title="SoundCloud"
-              width="100%"
-              height="120"
-              scrolling="no"
-              frameBorder="no"
-              allow="autoplay"
-              className="block"
-              src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
-                genres.soundcloudUrl
-              )}&color=%23${accentHex}&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
-            />
-          </div>
+        <div className="mt-10 rounded-xl overflow-hidden border border-edge/10 bg-surface-2">
+          <iframe
+            title="SoundCloud"
+            width="100%"
+            height="120"
+            scrolling="no"
+            frameBorder="no"
+            allow="autoplay"
+            className="block"
+            src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
+              genres.soundcloudUrl
+            )}&color=%23${accentHex}&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
+          />
         </div>
       )}
 
