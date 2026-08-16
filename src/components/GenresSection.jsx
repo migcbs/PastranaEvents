@@ -17,7 +17,7 @@ export default function GenresSection() {
   return (
     <section id="generos" ref={ref} className="py-24 md:py-32 px-6 md:px-12 bg-surface">
       <p className="font-mono text-xs tracking-widest text-muted mb-8">{genres.label}</p>
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
         <div>
           <h2
             className="font-black uppercase tracking-tighter"
@@ -31,18 +31,18 @@ export default function GenresSection() {
         </div>
 
         {genres.soundcloudUrl && (
-          <div className="w-full lg:w-[420px] flex-shrink-0">
+          <div className="w-full lg:w-[380px] flex-shrink-0 rounded-xl overflow-hidden border border-edge/10 bg-surface-2">
             <iframe
               title="SoundCloud"
               width="100%"
-              height="166"
+              height="120"
               scrolling="no"
               frameBorder="no"
               allow="autoplay"
-              className="rounded-xl"
+              className="block"
               src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
                 genres.soundcloudUrl
-              )}&color=%23${accentHex}&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`}
+              )}&color=%23${accentHex}&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
             />
           </div>
         )}
