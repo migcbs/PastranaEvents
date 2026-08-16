@@ -17,21 +17,19 @@ export default function GenresSection() {
   return (
     <section id="generos" ref={ref} className="py-24 md:py-32 px-6 md:px-12 bg-surface">
       <p className="font-mono text-xs tracking-widest text-muted mb-8">{genres.label}</p>
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-        <div>
-          <h2
-            className="font-black uppercase tracking-tighter"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 0.9 }}
-          >
-            {genres.headingLine1}
-            <br />
-            {genres.headingLine2}
-          </h2>
-          <p className="text-muted mt-6">{genres.subheading}</p>
-        </div>
+      <h2
+        className="font-black uppercase tracking-tighter"
+        style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 0.9 }}
+      >
+        {genres.headingLine1}
+        <br />
+        {genres.headingLine2}
+      </h2>
+      <p className="text-muted mt-6">{genres.subheading}</p>
 
-        {genres.soundcloudUrl && (
-          <div className="w-full lg:w-[380px] flex-shrink-0 rounded-xl overflow-hidden border border-edge/10 bg-surface-2">
+      {genres.soundcloudUrl && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
+          <div className="col-span-2 rounded-xl overflow-hidden border border-edge/10 bg-surface-2">
             <iframe
               title="SoundCloud"
               width="100%"
@@ -45,10 +43,10 @@ export default function GenresSection() {
               )}&color=%23${accentHex}&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-16">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
         {genres.items.map((genre, i) => {
           const Icon = ICONS[genre.icon] || Music;
           return (
