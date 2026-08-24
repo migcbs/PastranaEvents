@@ -334,7 +334,9 @@ export const defaultContent = {
       navLabel: "NAVEGACIÓN",
       contactLabel: "CONTACTO",
       copyright: "© 2025 Pastrana Events. Todos los derechos reservados.",
-      credits: "Diseño y desarrollo por [Tu nombre/estudio]",
+      credits: "Diseño y desarrollo por",
+      creditsName: "JXRXNX",
+      creditsUrl: "",
     },
     bottomNav: {
       cta: "RESERVAR FECHA",
@@ -624,7 +626,9 @@ export const defaultContent = {
       navLabel: "NAVIGATION",
       contactLabel: "CONTACT",
       copyright: "© 2025 Pastrana Events. All rights reserved.",
-      credits: "Design and development by [Your name/studio]",
+      credits: "Design and development by",
+      creditsName: "JXRXNX",
+      creditsUrl: "",
     },
     bottomNav: {
       cta: "BOOK YOUR DATE",

@@ -68,7 +68,21 @@ export default function Footer() {
 
       <div className="mt-12 pt-8 border-t border-edge/5 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-xs text-muted">{footer.copyright}</p>
-        <p className="text-xs text-muted">{footer.credits}</p>
+        <p className="text-xs text-muted">
+          {footer.credits}{" "}
+          {footer.creditsUrl ? (
+            <a
+              href={footer.creditsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none rounded"
+            >
+              {footer.creditsName}
+            </a>
+          ) : (
+            <span>{footer.creditsName}</span>
+          )}
+        </p>
       </div>
     </footer>
   );

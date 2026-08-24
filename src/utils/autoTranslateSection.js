@@ -33,6 +33,8 @@ const SKIP_KEYS = new Set([
   "youtube",
   "spotify",
   "soundcloudUrl",
+  "creditsName",
+  "creditsUrl",
 ]);
 
 // Salvaguarda adicional: nunca traducir algo que ya parece una URL, sin

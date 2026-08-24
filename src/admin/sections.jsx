@@ -837,7 +837,14 @@ export function FooterSectionAdmin({ lang }) {
       <TextInput label="Etiqueta navegación" value={draft.navLabel} onChange={(v) => setDraft({ ...draft, navLabel: v })} />
       <TextInput label="Etiqueta contacto" value={draft.contactLabel} onChange={(v) => setDraft({ ...draft, contactLabel: v })} />
       <TextInput label="Copyright" value={draft.copyright} onChange={(v) => setDraft({ ...draft, copyright: v })} full />
-      <TextInput label="Créditos" value={draft.credits} onChange={(v) => setDraft({ ...draft, credits: v })} full />
+      <TextInput label="Créditos (texto)" value={draft.credits} onChange={(v) => setDraft({ ...draft, credits: v })} />
+      <TextInput label="Créditos (nombre)" value={draft.creditsName || ""} onChange={(v) => setDraft({ ...draft, creditsName: v })} />
+      <TextInput
+        label="Créditos (link al portafolio)"
+        value={draft.creditsUrl || ""}
+        onChange={(v) => setDraft({ ...draft, creditsUrl: v })}
+        full
+      />
     </SectionCard>
   );
 }
